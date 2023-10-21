@@ -12,20 +12,28 @@ source haru/bin/activate
 #### Setting up Postgres
 Now after installation of postgres we need to set it up a bit
 ```
-sudo su -postgres
+sudo -i -u -postgres
 initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
 systemctl start postgresql
 systemctl enable postgresql
 ```
-#### Create DB and Table in Postgres
-Now with this postgres is ready and set up but we need to create a database and table 
-(caution dont exit yet) we are still in the postgres user 
+start with `psql`
+
+*"dont forget the username and password"*
+in this case its ('api_dude', 'da7a')
 ```
 psql
-```
-*DONT FORGET THE SEMICOLON AT THE END FROM NEXT :)*
-```
+CREATE ROLE api_dude with password da7a;
 CREATE DATABASE testing;
+GRANT ALL PRIVILEGES ON DATABASE testing TO api_dude;
+\c testing postgres
+GRANT ALL ON SCHEMA public to api_dude;
+exit
+```
+now end with `exit`.
+#### Now lets check if everything is correct by creating a table: 
+```
+psql -U api_dude -d testing
 CREATE TABLE weather(
   id SERIAL PRIMARY KEY,
   city VARCHAR(255) NOT NULL,
